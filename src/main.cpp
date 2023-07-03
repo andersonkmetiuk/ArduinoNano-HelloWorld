@@ -1,4 +1,12 @@
 #include <Arduino.h>
+/* Commands
+  a: change LED1
+  s: change LED2
+  r: change relay
+  d: change LEDs and Relay
+*/
+
+
 // defines
 #define LED1 7 //LED Digital Port 7
 #define LED2 8 // LED Digital Port 8
@@ -51,12 +59,12 @@ void loop() {
     // say what you got:
     Serial.print("I received: ");
     Serial.println(incomingByte, DEC);
-    if (incomingByte == 'a') // a = off
+    if (incomingByte == 'a') // a = change LED1 state
     {
       led1State = !led1State;
       Serial.println("LED1 state changed");
     }
-    else if (incomingByte == 's') // s = on
+    else if (incomingByte == 's') // s = change LED2 state
     {
       led2State = !led2State;
       Serial.println("LED2 state changed");
