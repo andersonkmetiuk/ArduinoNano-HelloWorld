@@ -34,7 +34,7 @@ board = nanoatmega328new
 framework = arduino
 ```
 ## Simple Projects
-### Serial-Relay-Leds-Button
+### Branch: Serial-Relay-Leds-Button
 This program tests commands from the Serial and Button to control 2 LED and a 5V Relay Module (jqc3f-5vdc-c).
 
 ----
@@ -154,5 +154,60 @@ void loop() {
 
   // save the reading. Next time through the loop, it'll be the lastButtonState:
   lastButtonState = reading;
+}
+```
+
+### Branch: Watchdog
+The Watchdog Timer is a useful feature to help the system recover from scenarios where the system hangs or freezes due to errors in the code written or due to conditions that may arise due to hardware issues.
+
+When enabled, it starts counting from 0 to a value selected by the user. If the watchdog timer is not reset by the time it reaches the user selected value, the watchdog resets the microcontroller.
+
+The ATmega328P watchdog timer can be configured for 10 different time settings (the time after which the watchdog timer overflows, thus causing a reset). The various times are : 16ms, 32ms, 64ms, 0.125s, 0.25s, 0.5s, 1s, 2s, 4s and 8s.
+
+Here, we will use a simple example of LED blinking.
+
+The LEDs are blinked for a certain time before entering a while(1) loop. The while(1) loop is used as a substitute for a system in the hanged state.
+
+Since the watchdog timer is not reset when in the while(1) loop, the watchdog causes a system reset and the LEDs start blinking again before the system hangs and restarts again. This continues in a loop.
+
+#### Word of caution :
+
+The Watchdog timer is disabled at the start of the code. A delay of 3 seconds is used before enabling the Watchdog.
+
+This delay is important in order to let the bootloader in Arduino to check if a new code is being uploaded and to give it time to burn the code into the flash.
+
+This is important as a precaution. A situation may occur, wherein due to faulty coding, or improper considerations; the code written resets the microcontroller at very short durations infinitely. 
+
+This will damage the Arduino board and lead to sketches not being uploaded to the board.
+
+This may not be the case for the new Optiboot loader that comes with the newer version of the Arduino, but it will definitely happen to the older ones.
+
+In case if you break the Arduino in this manner, you will have to burn the bootloader using a different Arduino as an ISP into the bricked Arduino.
+
+```
+#include <Arduino.h>
+#include <avr/wdt.h> /* Header for watchdog timers in AVR */
+
+#define TESTPIN 7 //choose the pin you want to test it
+
+void setup() {
+  Serial.begin(9600); /* Define baud rate for serial communication */
+  Serial.println("Watchdog Demo Starting");
+  pinMode(TESTPIN, OUTPUT);
+  wdt_disable();  /* Disable the watchdog and wait for more than 2 seconds */
+  delay(3000);  /* Done so that the Arduino doesn't keep resetting infinitely in case of wrong configuration */
+  wdt_enable(WDTO_2S);  /* Enable the watchdog with a timeout of 2 seconds */
+}
+
+void loop() {
+  for(int i = 0; i<20; i++) /* Blink LED for some time */
+  {
+    digitalWrite(TESTPIN, HIGH);
+    delay(100);
+    digitalWrite(TESTPIN, LOW);
+    delay(100);
+    wdt_reset();  /* Reset the watchdog */
+  }
+  while(1); /* Infinite loop. Will cause watchdog timeout and system reset. */
 }
 ```
