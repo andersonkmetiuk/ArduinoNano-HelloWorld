@@ -20,7 +20,7 @@
 |        **Memory**           | 2KB SRAM, 32KB FLASH, 1KB EEPROM |
 
 ---
-## Uduino Uno R3 V1.0
+## Arduino Nano
 
 Documentation &rarr; [Arduino Nano](https://docs.arduino.cc/hardware/nano)
 
