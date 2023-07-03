@@ -170,8 +170,8 @@ The LEDs are blinked for a certain time before entering a while(1) loop. The whi
 
 Since the watchdog timer is not reset when in the while(1) loop, the watchdog causes a system reset and the LEDs start blinking again before the system hangs and restarts again. This continues in a loop.
 
-#### Word of caution :
-
+### Word of caution :
+---
 The Watchdog timer is disabled at the start of the code. A delay of 3 seconds is used before enabling the Watchdog.
 
 This delay is important in order to let the bootloader in Arduino to check if a new code is being uploaded and to give it time to burn the code into the flash.
