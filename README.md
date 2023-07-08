@@ -1,6 +1,6 @@
 # Initial development for Arduino Nano
 
- <div><img src= https://docs.arduino.cc/static/3f2881bc823724bfa1f0b586a830bde1/image.svg width=300 align="left" /></div>
+ <div><img src= assets/arduino-nano.svg width=300 align="left" /></div>
 
 |          **Board**          |          Arduino Nano            |
 |:---------------------------:|:--------------------------------:|
