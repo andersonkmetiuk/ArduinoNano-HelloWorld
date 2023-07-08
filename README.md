@@ -20,6 +20,10 @@
 |        **Memory**           | 2KB SRAM, 32KB FLASH, 1KB EEPROM |
 
 ---
+
+ <div><img src= assets/Arduino-Nano-Complete-Pinout.png /></div> 
+
+---
 ## Arduino Nano
 
 Documentation &rarr; [Arduino Nano](https://docs.arduino.cc/hardware/nano)
