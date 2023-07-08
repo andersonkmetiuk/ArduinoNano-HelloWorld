@@ -42,7 +42,7 @@ framework = arduino
 This program tests commands from the Serial and Button to control 2 LED and a 5V Relay Module (jqc3f-5vdc-c).
 
 ----
-<img src=assets/relay-module-jqc3f-5vdc-c.jpg width="300"/>
+<img src=assets/relay-module-jqc3f-5vdc-c.jpg width="30%"/>
 
 ```
 #include <Arduino.h>
