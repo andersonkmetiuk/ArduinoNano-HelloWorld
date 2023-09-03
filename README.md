@@ -319,3 +319,4 @@ EthernetClient client = server.available(); //CRIA UMA CONEXÃO COM O CLIENTE
       }
  }
 ```
+[Source](https://blogmasterwalkershop.com.br/arduino/como-usar-com-arduino-modulo-ethernet-enc28j60-web-server) of this example.
