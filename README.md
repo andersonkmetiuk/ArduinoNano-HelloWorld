@@ -246,7 +246,7 @@ lib_deps = uipethernet/UIPEthernet@^2.0.12
 For this example we will use the **UIPEthernet.h**
 For this example you will also need the **ENC28J60** ethernet module.
 
-<img src=assets/ENC28J60.jpg />
+<img src=assets/ENC28J60.jpg width="30%" />
 
 ```
 #include <Arduino.h>
