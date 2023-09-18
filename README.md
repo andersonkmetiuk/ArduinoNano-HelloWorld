@@ -1,4 +1,4 @@
-# UIP-Ethernet
+# UIP Ethernet
 Testing the UIP Ethernet Library
 
 ```
