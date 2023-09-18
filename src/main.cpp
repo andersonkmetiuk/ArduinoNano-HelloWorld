@@ -1,63 +1,69 @@
-// Present a "Will be back soon web page", as stand-in webserver.
-// 2011-01-30 <jc@wippler.nl> http://opensource.org/licenses/mit-license.php
 #include <Arduino.h>
-#include <EtherCard.h>
+#include <SPI.h>
+#include <UIPEthernet.h>
 
-#define STATIC 1  // set to 1 to disable DHCP (adjust myip/gwip values below)
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //ATRIBUIÇÃO DE ENDEREÇO MAC AO ENC28J60
+byte ip[] = { 192, 168, 0, 175 }; //COLOQUE UMA FAIXA DE IP DISPONÍVEL DO SEU ROTEADOR. EX: 192.168.1.110  **** ISSO VARIA, NO MEU CASO É: 192.168.0.175
+EthernetServer server(80); //PORTA EM QUE A CONEXÃO SERÁ FEITA
 
-#if STATIC
-// ethernet interface ip address
-static byte myip[] = { 192,168,0,200 };
-// gateway ip address
-static byte gwip[] = { 192,168,0,1 };
-#endif
-
-// ethernet mac address - must be unique on your network
-static byte mymac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 };
-
-byte Ethernet::buffer[500]; // tcp/ip send and receive buffer
-
-const char page[] PROGMEM =
-"HTTP/1.0 503 Service Unavailable\r\n"
-"Content-Type: text/html\r\n"
-"Retry-After: 600\r\n"
-"\r\n"
-"<html>"
-  "<head><title>"
-    "Service Temporarily Unavailable"
-  "</title></head>"
-  "<body>"
-    "<h3>This service is currently unavailable</h3>"
-    "<p><em>"
-      "The main server is currently off-line.<br />"
-      "Please try again later."
-    "</em></p>"
-  "</body>"
-"</html>"
-;
+int ledPin = 8; //PINO DIGITAL UTILIZADO PELO LED
+String readString = String(30); //VARIÁVEL PARA BUSCAR DADOS NO ENDEREÇO (URL)
+int status = 0; //DECLARAÇÃO DE VARIÁVEL DO TIPO INTEIRA(SERÁ RESPONSÁVEL POR VERIFICAR O STATUS ATUAL DO LED)
 
 void setup(){
-  Serial.begin(57600);
-  Serial.println("\n[backSoon]");
-  
-  if (ether.begin(sizeof Ethernet::buffer, mymac) == 0) 
-    Serial.println( "Failed to access Ethernet controller");
-#if STATIC
-  ether.staticSetup(myip, gwip);
-#else
-  if (!ether.dhcpSetup())
-    Serial.println("DHCP failed");
-#endif
-
-  ether.printIp("IP:  ", ether.myip);
-  ether.printIp("GW:  ", ether.gwip);  
-  ether.printIp("DNS: ", ether.dnsip);  
-}
-
-void loop(){
-  // wait for an incoming TCP packet, but ignore its contents
-  if (ether.packetLoop(ether.packetReceive())) {
-    memcpy_P(ether.tcpOffset(), page, sizeof page);
-    ether.httpServerReply(sizeof page - 1);
+  Ethernet.begin(mac, ip); //PASSA OS PARÂMETROS PARA A FUNÇÃO QUE VAI FAZER A CONEXÃO COM A REDE
+  server.begin(); //INICIA O SERVIDOR PARA RECEBER DADOS NA PORTA 80
+  pinMode(ledPin, OUTPUT); //DEFINE O PINO COMO SAÍDA
+  digitalWrite(ledPin, LOW); //LED INICIA DESLIGADO
   }
-}
+void loop(){
+EthernetClient client = server.available(); //CRIA UMA CONEXÃO COM O CLIENTE
+  if (client) { // SE EXISTE CLIENTE FAZ
+    while (client.connected()) {//ENQUANTO EXISTIR CLIENTE CONECTADO, FAZ
+   if (client.available()) { //SE O CLIENTE ESTÁ HABILITADO, FAZ
+    char c = client.read(); //LÊ CARACTER A CARACTER DA REQUISIÇÃO HTTP
+    if (readString.length() < 100) //SE O ARRAY FOR MENOR QUE 100, FAZ
+      {
+        readString += c; // "readstring" VAI RECEBER OS CARACTERES LIDO
+      }
+        if (c == '\n') { //SE ENCONTRAR "\n" É O FINAL DO CABEÇALHO DA REQUISIÇÃO HTTP, FAZ
+          if (readString.indexOf("?") <0){ //SE ENCONTRAR O CARACTER "?", FAZ
+          }
+          else //SENÃO, FAZ
+        if(readString.indexOf("ledParam=1") >0){ //SE ENCONTRAR O PARÂMETRO "ledParam=1", FAZ
+             digitalWrite(ledPin, HIGH); //LIGA O LED
+             status = 1; //VARIÁVEL RECEBE VALOR 1(SIGNIFICA QUE O LED ESTÁ LIGADO)
+           }else{ //SENÃO, FAZ
+             digitalWrite(ledPin, LOW); //DESLIGA O LED
+             status = 0; //VARIÁVEL RECEBE VALOR 0(SIGNIFICA QUE O LED ESTÁ DESLIGADO)
+           }
+          client.println("HTTP/1.1 200 OK"); //ESCREVE PARA O CLIENTE A VERSÃO DO HTTP
+          client.println("Content-Type: text/html"); //ESCREVE PARA O CLIENTE O TIPO DE CONTEÚDO(texto/html)
+          client.println();
+          //AS LINHAS ABAIXO CRIAM A PÁGINA HTML
+          client.println("<body style=background-color:#ADD8E6>"); //DEFINE A COR DE FUNDO DA PÁGINA
+          client.println("<center><font color='blue'><h1>MASTERWALKER SHOP</font></center></h1>"); //ESCREVE "MASTERWALKER SHOP" NA PÁGINA
+          client.println("<h1><center>CONTROLE DE LED</center></h1>"); //ESCREVE "CONTROLE DE LED" NA PÁGINA
+          if (status == 1){ //SE VARIÁVEL FOR IGUAL A 1, FAZ
+          //A LINHA ABAIXO CRIA UM FORMULÁRIO CONTENDO UMA ENTRADA INVISÍVEL(hidden) COM O PARÂMETRO DA URL E CRIA UM BOTÃO APAGAR (CASO O LED ESTEJA LIGADO)
+          client.println("<center><form method=get name=LED><input type=hidden name=ledParam value=0 /><input type=submit value=APAGAR></form></center>");
+          }else{ //SENÃO, FAZ
+          //A LINHA ABAIXO CRIA UM FORMULÁRIO CONTENDO UMA ENTRADA INVISÍVEL(hidden) COM O PARÂMETRO DA URL E CRIA UM BOTÃO ACENDER (CASO O LED ESTEJA DESLIGADO)
+          client.println("<center><form method=get name=LED><input type=hidden name=ledParam value=1 /><input type=submit value=ACENDER></form></center>");
+          }
+          client.println("<center><font size='5'>Status atual do LED: </center>"); //ESCREVE "Status atual do LED:" NA PÁGINA
+          if (status == 1){ //SE VARIÁVEL FOR IGUAL A 1, FAZ
+              client.println("<center><font color='green' size='5'>LIGADO</center>"); //ESCREVE "LIGADO" EM COR VERDE NA PÁGINA
+          }else{ //SENÃO, FAZ
+              client.println("<center><font color='red' size='5'>DESLIGADO</center>"); //ESCREVE "DESLIGADO" EM COR VERMELHA NA PÁGINA
+          }
+          client.println("<hr />"); //TAG HTML QUE CRIA UMA LINHA HORIZONTAL NA PÁGINA
+          client.println("<hr />"); //TAG HTML QUE CRIA UMA LINHA HORIZONTAL NA PÁGINA
+          client.println("</body></html>"); //FINALIZA A TAG "body" E "html"
+          readString=""; //A VARIÁVEL É REINICIALIZADA
+          client.stop(); //FINALIZA A REQUISIÇÃO HTTP E DESCONECTA O CLIENTE
+            }
+          }
+        }
+      }
+ }
