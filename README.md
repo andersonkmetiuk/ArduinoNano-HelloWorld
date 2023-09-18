@@ -231,6 +231,10 @@ void loop() {
   while(1); /* Infinite loop. Will cause watchdog timeout and system reset. */
 }
 ```
+## Ethernet
+For this next examples you will need the **ENC28J60** ethernet module.
+
+<img src=assets/ENC28J60.jpg width="30%" />
 
 ### Branch: UIP-Ethernet
 
@@ -244,9 +248,6 @@ lib_deps = uipethernet/UIPEthernet@^2.0.12
 ```
 
 For this example we will use the **UIPEthernet.h**
-For this example you will also need the **ENC28J60** ethernet module.
-
-<img src=assets/ENC28J60.jpg width="30%" />
 
 ```
 #include <Arduino.h>
@@ -321,8 +322,20 @@ EthernetClient client = server.available(); //CRIA UMA CONEXÃO COM O CLIENTE
 ```
 [Source](https://blogmasterwalkershop.com.br/arduino/como-usar-com-arduino-modulo-ethernet-enc28j60-web-server) of this example.
 
+## EtherCard.h
 ### Branch: Ethercard-BackSoon
-Ethercard backSoon example
+Now let's try another library called [EtherCard.h](https://github.com/njh/EtherCard)
+
+For this library we will need to add this line
+```
+[env:nanoatmega328]
+platform = atmelavr
+board = nanoatmega328new
+framework = arduino
+lib_deps = jcw/EtherCard @ ^1.1.0
+```
+
+Now, let's try the backSoon example
 ```
 // Present a "Will be back soon web page", as stand-in webserver.
 // 2011-01-30 <jc@wippler.nl> http://opensource.org/licenses/mit-license.php
@@ -387,5 +400,4 @@ void loop(){
     ether.httpServerReply(sizeof page - 1);
   }
 }
-
 ```
