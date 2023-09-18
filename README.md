@@ -232,7 +232,7 @@ void loop() {
 }
 ```
 
-### Branch: Ethernet
+### Branch: UIP-Ethernet
 
 In PlatformIO to add an external library we need to add it like this:
 ```
