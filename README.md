@@ -1,5 +1,5 @@
-# UIP-Ethernet
-Testing the UIP Ethernet Library
+# Ethercard Back Soon
+Testing the backSoon example from Ethercard library
 
 ```
 [env:nanoatmega328]
