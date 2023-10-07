@@ -30,7 +30,7 @@ Documentation &rarr; [Arduino Nano](https://docs.arduino.cc/hardware/nano)
 
 Tutorials &rarr; [Built-in Examples](https://docs.arduino.cc/built-in-examples/)
 
-Configuring Visual Studio with [PlatformIO Extension](https://platformio.org/install/ide?install=vscode). Remember to set the **platform.ini** file with:
+Configuring Visual Studio with [PlatformIO Extension](https://platformio.org/install/ide?install=vscode). Remember to set the `platform.ini` file with:
 ```
 [env:nanoatmega328]
 platform = atmelavr
@@ -232,7 +232,7 @@ void loop() {
 }
 ```
 ## Ethernet
-For this next examples you will need the **ENC28J60** ethernet module.
+For this next examples you will need the `ENC28J60` ethernet module.
 
 <img src=assets/ENC28J60.jpg width="30%" />
 
@@ -247,7 +247,7 @@ framework = arduino
 lib_deps = uipethernet/UIPEthernet@^2.0.12
 ```
 
-For this example we will use the **UIPEthernet.h**
+For this example we will use the `UIPEthernet.h`
 
 ```
 #include <Arduino.h>
