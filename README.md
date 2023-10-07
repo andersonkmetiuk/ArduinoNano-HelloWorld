@@ -469,3 +469,70 @@ void loop () {
 }
 
 ```
+
+### Branch: Communication-ESP32
+Let's try to send a message with the `Arduino Nano` and then get a response and blink a LED with the `ESP32`. I have used this [guide](https://microcontrollerslab.com/esp32-uart-communication-pins-example/) as a reference.
+
+#### Arduino Nano
+We are going to use a simple loop just to send the letter 'A' through the UART
+```
+#include <Arduino.h>
+
+void setup() {
+  Serial.begin(9600);
+  Serial.println("Begin...");
+}
+
+void loop() {
+ Serial.println("A"); //Sends data to the ESP32 through UART
+ delay(5000);
+}
+```
+
+#### ESP32
+For the `ESP32` we are going to use the library `HardwareSerial` to set the second UART to receive the data. You can check this [branch](https://github.com/andersonkmetiuk/ESP32-HelloWorld/tree/Communication-Arduino) if you just want to burn the code into your `ESP32`.
+
+If you want to do it yourself. Remember to set the `platform.ini` accordinly. For my case I'm using the `ESP32 WT32 ETH01` Board.
+```
+[env:wt32-eth01]
+platform = espressif32@4.2.0
+board = wt32-eth01
+framework = arduino
+monitor_speed = 921600 
+```
+
+The following code reads the input throught the UART2 and blinks a LED
+```
+#include <Arduino.h>
+#include <HardwareSerial.h>
+
+#define RXPIN 5
+#define TXPIN 17
+#define LED1 14 // IO14 pin
+
+unsigned int state = 0; //change LED state
+char received = '0';
+HardwareSerial SerialPort(2);  //if using UART2
+
+void setup() {
+  pinMode(LED1,OUTPUT);
+  digitalWrite(LED1, LOW);
+  Serial.begin(9600);
+
+  //SerialPort.begin (BaudRate, SerialMode, RX_pin, TX_pin)
+  SerialPort.begin(9600, SERIAL_8N1, RXPIN, TXPIN);
+  Serial.println("Begin...");
+}
+
+void loop() {
+  if (SerialPort.available())
+  {
+     received = SerialPort.read();
+    if (received == 'A') {
+      state = !state;
+      Serial.println("Arduino");
+      digitalWrite(LED1, state);
+    }
+  }
+}
+```
