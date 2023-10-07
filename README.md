@@ -46,6 +46,77 @@ sudo apt-get install python3-venv
 ---
 
 ## Simple Projects
+### Branch: HelloWorld-Blinky 
+```
+#include <Arduino.h>
+//Blinky - Hello World
+
+// defines
+#define LED1 7 //LED Digital Port 7
+#define LED2 8 // LED Digital Port 8
+
+void setup() {
+  //Pins Setup
+  pinMode(LED1,OUTPUT);
+  digitalWrite(LED1, LOW);
+  pinMode(LED2,OUTPUT);
+  digitalWrite(LED2, LOW);
+}
+
+void loop() {
+    //HELLO WORLD
+    digitalWrite(LED1,HIGH);
+    digitalWrite(LED2,LOW);
+    delay(100);
+    digitalWrite(LED1,LOW);
+    digitalWrite(LED2,HIGH);
+    delay(100);
+
+}
+```
+
+### Branch: Button-Blinky 
+```
+#include <Arduino.h>
+//Press the Button to turn both LEDs ON/OFF
+
+// defines
+#define LED1 7 //LED Digital Port 7
+#define LED2 8 // LED Digital Port 8
+#define BUTTON1 9 // Button Digital Port 9
+
+//global var
+unsigned int state = 0; //change LED state
+unsigned int pressB = 0; //button presses
+
+
+void setup() {
+  //Pins Setup
+  pinMode(LED1,OUTPUT);
+  digitalWrite(LED1, LOW);
+  pinMode(LED2,OUTPUT);
+  digitalWrite(LED2, LOW);
+  pinMode(BUTTON1, INPUT);
+  Serial.begin(9600);
+  Serial.println("Begin...");
+}
+
+void loop() {
+  //check if the button is pressed then change the state of the LEDs to ON/OFF
+  if(digitalRead(BUTTON1))
+  {
+    state = !state;
+    Serial.println("Button");
+    digitalWrite(LED1,state);
+    digitalWrite(LED2,state);
+    pressB++; //increment button press
+    Serial.println(pressB);
+    delay(100); //debounce
+  }
+  delay(100); //debounce
+}
+```
+
 ### Branch: Serial-Relay-Leds-Button
 This program tests commands from the Serial and Button to control 2 LED and a 5V Relay Module (jqc3f-5vdc-c).
 
@@ -231,6 +302,20 @@ void loop() {
   while(1); /* Infinite loop. Will cause watchdog timeout and system reset. */
 }
 ```
+
+### Optimizing Code
+[This](https://docs.arduino.cc/learn/programming/memory-guide) is a very interesting article about memories. This also shows why is nice to use the [PROGMEM](https://www.arduino.cc/reference/en/language/variables/utilities/progmem/) to optmize RAM usage, because SRAM is 2kb only and Flash Memory is 32kb. So we can use Flash Memory to store some parts of the code while the program is running and we let the SRAM only for the critical things that the program needs.
+
+PROGMEM, which stands for Program Memory, can be used to store variable data into Flash memory space. But the use of PROGMEM presents one disadvantage: data read speed. Using RAM will provide a much faster data read speed, but PROGMEM, as it uses Flash memory, will be slower than RAM, given the same data size. Thus, it is essential to design code knowing which variables are crucial and which do not or have a lower priority.
+
+Another way to store data in Flash Memory is to use a Serial.print() or Serial.println() instruction with the use of the F() String wrapper around the literals. For example:
+```
+Serial.println(F("Hello World"));
+```
+[Here](https://playground.arduino.cc/Learning/Memory/) you can read more about it.
+
+When we use the standard `Serial.print()` it uses the SRAM for the string, so with a few prints and the SRAM is full (we only have *2kB* of SRAM). Using the `F()` or the `PSTR()` it stores the string inside the FLASH memory (*32kB*), thus saving the SRAM space.
+
 ## Ethernet
 For this next examples you will need the `ENC28J60` ethernet module.
 
