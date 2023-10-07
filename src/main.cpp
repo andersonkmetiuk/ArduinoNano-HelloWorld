@@ -6,6 +6,6 @@ void setup() {
 }
 
 void loop() {
- Serial.println("Arduino"); //Sends data to the ESP32 through UART
+ Serial.println("A"); //Sends data to the ESP32 through UART
  delay(5000);
 }
