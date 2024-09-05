@@ -1,7 +1,13 @@
+/* Project by Anderson Kmetiuk
+   Board --> Arduino Nano
+   The main purpose of this repo is to test the basic features of the board
+   and try simple projects just to get use to
+*/
+
 #include <Arduino.h>
-// defines
+
 #define LED1 7 //LED Digital Port 7
-#define BLINK 250
+#define BLINK 75
 
 unsigned long blink_timer;
 unsigned int led_state;
@@ -21,5 +27,4 @@ void loop() {
     led_state = !led_state;
     blink_timer = millis() + BLINK;
   }
-
 }

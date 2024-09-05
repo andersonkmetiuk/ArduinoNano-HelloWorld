@@ -1,2 +1,2 @@
-# Blinky - Hello World
-Blink LEDs with delay
+# Millis Blink
+Blink LEDs using millis function
