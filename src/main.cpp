@@ -1,25 +1,25 @@
 #include <Arduino.h>
-//Blinky - Hello World
-
 // defines
 #define LED1 7 //LED Digital Port 7
-#define LED2 8 // LED Digital Port 8
+#define BLINK 250
 
+unsigned long blink_timer;
+unsigned int led_state;
 void setup() {
   //Pins Setup
   pinMode(LED1,OUTPUT);
   digitalWrite(LED1, LOW);
-  pinMode(LED2,OUTPUT);
-  digitalWrite(LED2, LOW);
+  blink_timer = millis() + BLINK;
+  led_state = 1;
 }
 
 void loop() {
-    //HELLO WORLD
-    digitalWrite(LED1,HIGH);
-    digitalWrite(LED2,LOW);
-    delay(100);
-    digitalWrite(LED1,LOW);
-    digitalWrite(LED2,HIGH);
-    delay(100);
+  //HELLO WORLD
+  if(millis() > blink_timer)
+  {
+    digitalWrite(LED1, led_state);
+    led_state = !led_state;
+    blink_timer = millis() + BLINK;
+  }
 
 }
